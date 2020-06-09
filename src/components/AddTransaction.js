@@ -3,9 +3,19 @@ import { GlobalContext } from '../context/GlobalState';
 
 export const AddTransaction = () => {
     const [text, setText] = useState('');
-    const [amount, setAmount] = useState(0);
+    let [amount, setAmount] = useState(0);
+    const [setIncome, setTrue] = useState('income')
 
     const { addTransaction } = useContext(GlobalContext);
+
+    function isItIncome () {
+        if (setIncome !== 'income') {
+            return +amount * -1 
+        } else {
+            return amount *= 1
+        }   
+
+    }
 
     const onSubmit = e => {
         e.preventDefault();
@@ -13,22 +23,31 @@ export const AddTransaction = () => {
         const newTransaction = {
             id: Math.floor(Math.random() * 1000000),
             text,
-            amount: +amount
+            amount: isItIncome()
         }
 
         addTransaction(newTransaction)
     }
 
+    console.log(setIncome)
+
     return (
         <>
             <h3>Add new transaction</h3>
             <form onSubmit={onSubmit}>
+                <div className="form-control type-box">
+                    <label htmlFor="text">Type</label>
+                    <select className="type-box-select" onChange = {(e) => setTrue(e.target.value)}>
+                        <option value='income'>Income</option>
+                        <option value='expenses'>Expenses</option>
+                    </select>
+                </div>
                 <div className="form-control">
                     <label htmlFor="text">Text</label>
                     <input type="text" value={text} onChange = {(e) => setText(e.target.value)} placeholder="Enter text..." />
                 </div>
                 <div className="form-control">
-                    <label htmlFor="amount">Amount <br /> (negative - expenses, positive - income)</label>
+                    <label htmlFor="amount">Amount <br /></label>
                     <input type="number" value={amount} onChange = {(e) => setAmount(e.target.value)} placeholder="Enter amount..."/>
                 </div>
                 <button className="btn">Add transaction</button>
